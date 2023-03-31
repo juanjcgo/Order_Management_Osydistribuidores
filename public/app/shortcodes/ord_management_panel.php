@@ -9,6 +9,9 @@ wp_enqueue_script("ord_bootstrap_2_js");
 wp_enqueue_script("ord_order_management_js");
 wp_enqueue_script("ord_datatables_js");
 
+
+$user_id = encrypt_user_id(get_current_user_id());
+
 ?>
 
 <nav class="navbar navbar-dark ord-bg-navbar ">
@@ -80,7 +83,7 @@ wp_enqueue_script("ord_datatables_js");
             </nav>
 
 
-            <table id="ord_data_orders" class="table table-hover table-light table-striped" width="100%">
+            <table id="ord_data_orders" class="table table-hover table-light table-striped" width="100%" data-info-order="<?php echo $user_id ?>">
                 <thead class="table-light">
                     <tr>
                         <th scope="col">#</th>
@@ -116,18 +119,21 @@ wp_enqueue_script("ord_datatables_js");
             </div>
             <div class="modal-body">
 
-            <div class="container">
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="#tab1">Detalles del pedido</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#tab2">Detalles del cliente</a>
-                    </li>
-                </ul>
+                <div class="container">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#tab1">Detalles del pedido</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#tab2">Detalles del cliente</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#tab3">Notas</a>
+                        </li>
+                    </ul>
                     <div class="tab-content">
                         <div id="tab1" class="tab-pane fade show active">
-                    
+
                             <div class="ord_lists_box">
 
                                 <ul class="list-group list-group-flush">
@@ -138,6 +144,11 @@ wp_enqueue_script("ord_datatables_js");
                                 </ul>
 
 
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">Sub Total: <span id="order_price"></span></li>
+                                    <li class="list-group-item">Impuesto: <span id="order_tax"> COP $ 0</span></li>
+                                    <li class="list-group-item">Monto de pago: <span id="order_payment_amount"> COP $ 0</span></li>
+                                </ul>
 
                                 <table id="ord_products" class="table" width="100%">
                                     <thead class="">
@@ -150,27 +161,58 @@ wp_enqueue_script("ord_datatables_js");
                                     <tbody></tbody>
                                 </table>
 
-
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">Sub Total: <span id="order_price"></span></li>
-                                    <li class="list-group-item">Impuesto: <span id="order_tax"> COP $ 0</span></li>
-                                    <li class="list-group-item">Monto de pago: <span id="order_payment_amount"> COP $ 0</span></li>
-                                </ul>
-
                             </div>
 
                         </div>
                         <div id="tab2" class="tab-pane fade">
-                            <p>Contenido de la pestaña 2.</p>
+                            <div class="ord_lists_box">
+
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">Nombre: <span id="ord_name_customer"></span></li>
+                                    <li class="list-group-item">Apellido: <span id="ord_lastname_customer"></span></li>
+                                    <li class="list-group-item">Correo electrónico: <span id="ord_email_customer"></span></li>
+                                    <li class="list-group-item">Teléfono: <span id="ord_phone_customer"></span></li>
+                                    <li class="list-group-item">Dirección Línea 1: <span id="ord_address1_customer"></span></li>
+                                    <li class="list-group-item">Dirección Línea 2: <span id="ord_address2_customer"></span></li>
+                                    <li class="list-group-item">Ciudad: <span id="ord_city_customer"></span></li>
+                                    <li class="list-group-item">Estado / Provincia / Región: <span id="ord_company_customer"></span></li>
+                                    <li class="list-group-item">Código ZIP / Código postal: <span id="ord_zipcode_customer"></span></li>
+                                    <li class="list-group-item">Pais: <span id="ord_country_customer"></span></li>
+                                </ul>
+                            </div>
                         </div>
-    
+
+                        <div id="tab3" class="tab-pane fade">
+                            <div class="ord_lists_box">
+                                <br>
+                                <br>
+
+                                <div class="card mb-3" style="width: 100%;">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Notas del pedido 1</h5>
+                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="card text-end" style="width: 100%;">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Notas del pedido 2</h5>
+                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                        
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
-         
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>

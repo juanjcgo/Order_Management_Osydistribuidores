@@ -1,13 +1,19 @@
 (function ($) {
   $(document).ready(function () {
-    console.log(ord.rest_url);
+
+    var info_order = $('#ord_data_orders').data('info-order');
+    console.log(info_order);
 
     $.ajax({
       type: "POST",
       url: `${ord.rest_url}/ord_get_orders`,
-      data: true,
+      data: {
+        info_order: info_order
+      },
       success: function (response) {
+        console.log("response");
         console.log(response);
+        console.log("response");
         table = $("#ord_data_orders").DataTable({
           data: response.data,
           columns: [
@@ -46,42 +52,57 @@
 
       console.log(data_order.order_id);
 
-      if(data_order.order_id){
+      if (data_order.order_id) {
 
-          $.ajax({
-            type: "POST",
-            url: `${ord.rest_url}/ord_get_order`,
-            data: {
-              order_id: data_order.order_id
-            },
-            success: function (response) {
-              console.log(response.data);
-              $('#ord_id_order').text(' #' + response.data.order_id);
-              $('#ord_date').text(response.data.order_date_created);
-              $('#ord_status').text(response.data.order_status);
-              $('#ord_commission').text(response.data.order_commission);
-              $('#order_price').text(response.data.order_price);
-              $('#order_payment_amount').text(response.data.order_price);
+        $.ajax({
+          type: "POST",
+          url: `${ord.rest_url}/ord_get_order`,
+          data: {
+            order_id: data_order.order_id
+          },
+          success: function (response) {
+            console.log(response.data);
 
-              $.each(response.data.products, function(index, row) {
-                // Crear una nueva fila de la tabla
-                var newRow = $('<tr>');
-          
-                // Agregar las celdas de la fila con los datos correspondientes
-                newRow.append($('<td>').text(row.prod_name));
-                newRow.append($('<td>').text(row.prod_quantity));
-                newRow.append($('<td>').text(row.prod_total));
-          
-                // Agregar la nueva fila a la tabla
-                $('#ord_products tbody').append(newRow);
-              });
+            /* Details Orders */
 
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-              console.log(textStatus, errorThrown);
-            },
-          });
-  
+            $('#ord_id_order').text(' #' + response.data.order_id);
+            $('#ord_date').text(response.data.order_date_created);
+            $('#ord_status').text(response.data.order_status);
+            $('#ord_commission').text(response.data.order_commission);
+            $('#order_price').text(response.data.order_price);
+            $('#order_payment_amount').text(response.data.order_price);
+
+            $.each(response.data.products, function (index, row) {
+
+              var newRow = $('<tr>');
+
+              newRow.append($('<td>').text(row.prod_name));
+              newRow.append($('<td>').text(row.prod_quantity));
+              newRow.append($('<td>').text(row.prod_total));
+
+              $('#ord_products tbody').append(newRow);
+            });
+
+
+            /* Details Customer */
+            $('#ord_name_customer').text(response.data.billing.first_name);
+            $('#ord_lastname_customer').text(response.data.billing.last_name);
+            $('#ord_email_customer').text(response.data.billing.email);
+            $('#ord_phone_customer').text(response.data.billing.phone);
+            $('#ord_address1_customer').text(response.data.billing.address_1);
+            $('#ord_address2_customer').text(response.data.billing.address_2);
+            $('#ord_city_customer').text(response.data.billing.city);
+            $('#ord_company_customer').text(response.data.billing.company);
+            $('#ord_zipcode_customer').text(response.data.billing.postcode);
+            $('#ord_country_customer').text(response.data.billing.country);
+            
+
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            console.log(textStatus, errorThrown);
+          },
+        });
+
       }
 
       /* $("#stu_main_nivel_user").val(data_user.id_level);

@@ -14,7 +14,7 @@
  */
 
 
-define('ORD_PATH', plugin_dir_path(__FILE__));
+define('ORD_PATH', plugin_dir_path(__FILE__)); 
 
 /* 
  *Controllers
@@ -22,6 +22,8 @@ define('ORD_PATH', plugin_dir_path(__FILE__));
 require_once ORD_PATH . "controllers/controller_api.php";
 require_once ORD_PATH . "controllers/controller_shortcode.php";
 require_once ORD_PATH . "controllers/controller_scripts_register.php";
+require_once ORD_PATH . "controllers/controller_security.php";
+
 
 
 

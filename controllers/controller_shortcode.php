@@ -7,7 +7,7 @@ function ord_management_panel()
         $current_user = wp_get_current_user();
         $user_roles = $current_user->roles;
 
-        if (in_array('administrator', $user_roles)) {
+       /*  if (in_array('administrator', $user_roles)) { */
 
             ob_start();
             include ORD_PATH . '/public/app/shortcodes/ord_management_panel.php';
@@ -15,9 +15,9 @@ function ord_management_panel()
 
             return $content;
             
-        }else {
+        /* }else {
             echo "No tienes permisos para acceder a esta pagina";
-        }
+        } */
 
     } else {
         echo "No tienes accesos a esta area, por favor inicia sesión";
