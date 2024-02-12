@@ -1,0 +1,83 @@
+:root {
+    --primary-color: #B41154;
+    --secondary-color: #54595F;
+    --third-color: #9b51e0ad;
+    --text-color: #54595f;
+    --font-family: "Poppins", Sans-serif;
+    --background-color-inputs: #f7f7f7;
+}
+
+#advisor_phone,
+#advisor_city,
+#advisor_address,
+#advisor_birthday,
+#advisor_children {
+    color: var(--secondary-color) !important;
+    background-color: var(--background-color-inputs) !important;
+    border-radius: 10px !important;
+    padding: 16px !important;
+    border: none !important;
+    font-size: 14px !important;
+    font-family: var(--font-family) !important;
+}
+
+.ord-title-profile {
+    font-family: var(--font-family);
+    font-size: 20px;
+    color: var(--secondary-color);
+}
+
+#ord_edit_profile label.form-label {
+    font-family: var(--font-family);
+    font-size: 16px;
+    color: var(--secondary-color);
+}
+
+#ord_edit_profile button,
+#um_account_submit_general,
+#um_account_submit_password,
+.um-request-button,
+#um_account_submit_delete {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    padding: 13px 30px;
+    display: flex;
+    margin: 0 auto;
+}
+
+#ord_edit_profile button:hover {
+    background-color: var(--third-color);
+}
+
+.um-account-main {
+    font-family: var(--font-family) !important;
+    max-width: 100% !important;
+}
+
+.um .um-form input[type=text],
+.um .um-form input[type=search],
+.um .um-form input[type=tel],
+.um .um-form input[type=number],
+.um .um-form input[type=password],
+.um .um-form textarea,
+.select2-container .select2-choice,
+.select2-container-multi .select2-choices {
+    color: var(--secondary-color) !important;
+    background-color: var(--background-color-inputs) !important;
+    border-radius: 10px !important;
+    padding: 26px !important;
+    border: none !important;
+    font-size: 14px !important;
+    font-family: var(--font-family) !important;
+}
+
+.um-account.um-editing {
+    padding: 10px;
+    border: 1px #c7c7c7 solid;
+    border-radius: 8px;
+}
+
+.um-account-side li a.current {
+    background-color: var(--third-color) !important;
+}
