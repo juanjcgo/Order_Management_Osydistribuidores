@@ -3,7 +3,7 @@
 /**
  * Plugin Name:       Order management
  * Plugin URI:        https://github.com/juanjcgo
- * Description:       Order management for consultants || Prueba de conexión
+ * Description:       Order management for consultants || Prueba de conexión 2
  * Version:           1.7
  * Requires at least: 6.0.2
  * Requires PHP:      7.4
