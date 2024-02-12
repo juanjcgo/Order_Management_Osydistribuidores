@@ -60,7 +60,7 @@ function ord_manage_request()
 /****************************** Update Notes CRM Upnify *******************************/
 function ord_update_notes_callback($object)
 {
-    $ruta_archivo = __DIR__ . '/info/archivo.txt';
+    $ruta_archivo = __DIR__ . '/logs.txt';
     try {
 
         // Registra el resultado de la petición API
@@ -96,7 +96,7 @@ function ord_update_notes_callback($object)
             }
         }
         return false;
-        
+
     } catch (Exception $e) {
         file_put_contents($ruta_archivo, 'Excepción capturada' . $e->getMessage() . "\n", FILE_APPEND);
         return false;
