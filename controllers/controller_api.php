@@ -72,7 +72,10 @@ function ord_update_notes_callback($object)
             $authorization_header = $headers['Authorization'];
             $token = substr($authorization_header, 7); // Quita "Bearer " del encabezado
 
-            file_put_contents($ruta_archivo, $current_time . ' - Si hay token: ' . $token . "\n", FILE_APPEND);
+            if($token != 'osygulE1PIu7Q9j?ojhU!zEwa=4HoCuDRj?hF64pKwiKid=cmOUnu1K-7Qm5zejggw-Lf?LwUQxZlZyLah1kNTT3uE09N2uUDEeeM9NAfWgw8LMjb01P4yXPOeVY=kh/4FFGzrXW/G-=Nc2NWLZQlOW/nEhc60xtCm57rLS0BgQOswD0SZNBo2I=rM-t9gdvYiO2qswiObjYPs3AXZ4rIqERU/-qLzT5DF1tOwyPG7Id7UC=Nf-zWc8ZTMQPtRIp') {
+                file_put_contents($ruta_archivo, $current_time . ' - Token de autenticación no autorizado: ' . $token . "\n", FILE_APPEND);
+                return false;
+            }            
             
         } else {
             // Si no se proporcionó el encabezado Authorization, responder con un mensaje de error
