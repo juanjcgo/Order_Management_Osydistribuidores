@@ -65,6 +65,20 @@ function ord_update_notes_callback($object)
     try {
         file_put_contents($ruta_archivo, $current_time . ' - tkOportunidad: ' . $object['tkOportunidad'] . "\n", FILE_APPEND);
 
+        $headers = getallheaders();
+        // Verificar si el encabezado Authorization está presente y tiene el formato esperado
+        if (isset($headers['Authorization'])) {
+            // Separar el token del encabezado
+            $authorization_header = $headers['Authorization'];
+            $token = substr($authorization_header, 7); // Quita "Bearer " del encabezado
+
+            file_put_contents($ruta_archivo, $current_time . ' - Si hay token: ' . $token . "\n", FILE_APPEND);
+            
+        } else {
+            // Si no se proporcionó el encabezado Authorization, responder con un mensaje de error
+            file_put_contents($ruta_archivo, $current_time . ' - No se proporcionó el encabezado Authorization ' . "\n", FILE_APPEND);
+        }
+
         // Si el tipo de seguimiento es: Nota de seguimiento
         if ($object['tkSeguimientoCategoria'] == 'SEGC-501D2268-5A4D-4C89-9D67-B5C2232C8468') {
             global $wpdb;
@@ -87,12 +101,11 @@ function ord_update_notes_callback($object)
                 $nota_id = wc_create_order_note($order_id, $object['seguimiento'], get_current_user_id(), true);
                 return true;
             } else {
-                file_put_contents($ruta_archivo, $current_time . ' - Estado de nota: ' . $results . "\n", FILE_APPEND);
+                file_put_contents($ruta_archivo, $current_time . ' - Error al crear la nota: ' . $results . "\n", FILE_APPEND);
             }
         }
 
         return false;
-
     } catch (Exception $e) {
         file_put_contents($ruta_archivo, $current_time . ' - Excepción capturada' . $e->getMessage() . "\n", FILE_APPEND);
         return false;
