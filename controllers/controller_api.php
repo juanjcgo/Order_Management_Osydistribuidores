@@ -3,6 +3,15 @@
 function ord_manage_request()
 {
     register_rest_route(
+        "osy",
+        "update_notes",
+        array(
+            'methods'  => 'POST',
+            'callback' => 'ord_update_notes_callback'
+        )
+    );
+
+    register_rest_route(
         "ord",
         "ord_get_orders",
         array(
@@ -48,6 +57,53 @@ function ord_manage_request()
     );
 }
 
+/****************************** Update Notes CRM Upnify *******************************/
+function ord_update_notes_callback($object)
+{
+    $ruta_archivo = __DIR__ . '/info/archivo.txt';
+    try {
+
+        // Registra el resultado de la petición API
+        file_put_contents($ruta_archivo, 'seguimiento: ' . $object['seguimiento'] . "\n", FILE_APPEND);
+        file_put_contents($ruta_archivo, 'tipoSeguimiento: ' . $object['tipoSeguimiento'] . "\n", FILE_APPEND);
+        file_put_contents($ruta_archivo, 'tkSeguimientoCategoria: ' . $object['tkSeguimientoCategoria'] . "\n", FILE_APPEND);
+        file_put_contents($ruta_archivo, 'tkFase: ' . $object['tkFase'] . "\n", FILE_APPEND);
+        file_put_contents($ruta_archivo, 'tkOportunidad: ' . $object['tkOportunidad'] . "\n", FILE_APPEND);
+
+        // Si el tipo de seguimiento es: Nota de seguimiento
+        if ($object['tkSeguimientoCategoria'] == 'SEGC-501D2268-5A4D-4C89-9D67-B5C2232C8468') {
+            global $wpdb;
+
+            $meta_key = 'tkOportunidad';
+            $meta_value = $object['tkOportunidad'];
+            $table_name = $wpdb->prefix . 'postmeta';
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT post_id FROM $table_name WHERE meta_key = %s AND meta_value = %s",
+                    $meta_key,
+                    $meta_value
+                )
+            );
+
+            $order_id = ($results) ? $results[0]->post_id : false;
+
+            file_put_contents($ruta_archivo, 'id_order: ' . $order_id . "\n", FILE_APPEND);
+
+            if ($order_id) {
+                $nota_id = wc_create_order_note($order_id, $object['seguimiento'], get_current_user_id(), true);
+                return true;
+            }
+        }
+        return false;
+        
+    } catch (Exception $e) {
+        file_put_contents($ruta_archivo, 'Excepción capturada' . $e->getMessage() . "\n", FILE_APPEND);
+        return false;
+    }
+}
+
+
 /****************************** Update View Note *******************************/
 function ord_update_view_notes_callback($data_request)
 {
@@ -73,7 +129,6 @@ function ord_update_view_notes_callback($data_request)
                 'res' => true,
                 'msg' => 'Nota actualizada'
             ];
-
         } else {
             return [
                 'res' => false,
