@@ -225,3 +225,5 @@ function change_status_order_acction_lote($redirect_to, $action, $post_ids) {
     return $redirect_to;
 }
 add_filter('handle_bulk_actions-edit-shop_order', 'change_status_order_acction_lote', 10, 3);
+
+
