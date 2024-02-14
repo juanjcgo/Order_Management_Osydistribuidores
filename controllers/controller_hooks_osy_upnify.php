@@ -87,9 +87,12 @@ function osy_create_opportunity($tkContacto, $order_id, $concepto)
             if ($billing_city == 'bogotá') {
 
                 // Cambiar Fase a 'En ruta Bogota'
-                $tkFase = 'OFAS-E49B9D65-03CE-4356-95E2-82DB321AFDB2'; 
+                $tkFase = 'OFAS-E49B9D65-03CE-4356-95E2-82DB321AFDB2';
 
-                // Sumar 1 día
+                // Crear un objeto DateTime con la fecha actual
+                $object_date = new DateTime(date('Y-m-d'));
+
+                // Sumar un día
                 $object_date->add(new DateInterval('P1D'));
 
                 // Obtener la nueva fecha - Cierre estimado
