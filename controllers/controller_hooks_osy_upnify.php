@@ -288,3 +288,24 @@ function send_new_order_data_to_crm($order_id)
         }
     }
 }
+
+add_shortcode('show_data_order', 'show_data_order');
+function show_data_order() {
+    $pedido = wc_get_order(5372);
+    $output = '';
+
+    // Verificar si el pedido existe
+    if (!$pedido) {
+        return 'Pedido no encontrado.';
+    }
+
+    // Obtener los datos de facturación del pedido
+    $billing_city = $pedido->get_billing_city();
+    $billing_state = $pedido->get_billing_state();
+
+    // Construir el HTML para mostrar los datos
+    $output = '<p>Ciudad de facturación: ' . $billing_city . '</p>';
+    $output .= '<p>Estado de facturación: ' . $billing_state . '</p>';
+
+    return $output;
+}
