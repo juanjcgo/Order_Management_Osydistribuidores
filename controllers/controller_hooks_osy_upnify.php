@@ -36,7 +36,7 @@ function osy_create_opportunity($tkContacto, $order_id, $concepto)
     $ruta_archivo = ORD_PATH . 'info/logs.txt';
     $current_time = current_time('mysql');
 
-    if(!isset($res_token[0]->code) || empty($res_token[0]->code)) {
+    if (!isset($res_token[0]->code) || empty($res_token[0]->code)) {
         file_put_contents($ruta_archivo, $current_time . ' - ' . 'Error al generar el Token de sesión: ' . $res_token . "\n", FILE_APPEND);
     }
 
@@ -46,6 +46,8 @@ function osy_create_opportunity($tkContacto, $order_id, $concepto)
     $total         = '';
     $total_items   = '';
     $shipping_cost = 0;
+    $billing_city  = '';
+    $tkFase        = 'OFAS-F09A3A84-5351-4D80-9489-5E69A751A4AA'; // Confirmación telefonica
 
     switch ($code) {
         case 0:
@@ -55,8 +57,8 @@ function osy_create_opportunity($tkContacto, $order_id, $concepto)
             // Sumar 5 días
             $object_date->add(new DateInterval('P5D'));
 
-            // Obtener la nueva fecha
-            $new_date = $object_date->format('Y-m-d');
+            // Obtener la nueva fecha - Cierre estimado
+            $cierreEstimado = $object_date->format('Y-m-d');
 
             // Asegúrate de tener acceso a las funciones de WooCommerce
             if (class_exists('WooCommerce')) {
@@ -75,6 +77,23 @@ function osy_create_opportunity($tkContacto, $order_id, $concepto)
 
                 // Conto de envio
                 $shipping_cost = $order->get_shipping_total();
+
+                // Obtener los datos de facturación del pedido
+                $billing_city = strtolower($order->get_billing_city());
+                /* $billing_state = $order->get_billing_state(); */
+            }
+
+            //  Validar la fase
+            if ($billing_city == 'bogotá') {
+
+                // Cambiar Fase a 'En ruta Bogota'
+                $tkFase = 'OFAS-E49B9D65-03CE-4356-95E2-82DB321AFDB2'; 
+
+                // Sumar 1 día
+                $object_date->add(new DateInterval('P1D'));
+
+                // Obtener la nueva fecha - Cierre estimado
+                $cierreEstimado = $object_date->format('Y-m-d');
             }
 
             // Token de sesión
@@ -83,12 +102,12 @@ function osy_create_opportunity($tkContacto, $order_id, $concepto)
             $url = 'https://api.salesup.com/oportunidades';
             $params = '{
                 "tkProspecto":    "' . $tkContacto . '",
-                "tkFase":         "OFAS-E49B9D65-03CE-4356-95E2-82DB321AFDB2",
+                "tkFase":         "' . $tkFase . '",
                 "tkLinea":        "LINP-CAFD0FB9-A9C5-455C-B804-8837C4C1295B",
                 "tkMoneda":       "MON-41B50D55-201D-4611-A11B-C9A68B39D1BC",
                 "tkCerteza":      "CER-8751F9C5-E0A0-4DC7-B2F3-1D35CD939369",
                 "concepto":       "' . $concepto . '",
-                "cierreEstimado": "' . $new_date . '",
+                "cierreEstimado": "' . $cierreEstimado . '",
                 "monto":          '  . $total . ',
                 "cantidad":       '  . $total_items . ',
                 "subtotal":       '  . $subtotal . ',
@@ -290,8 +309,9 @@ function send_new_order_data_to_crm($order_id)
 }
 
 add_shortcode('show_data_order', 'show_data_order');
-function show_data_order() {
-    $pedido = wc_get_order(5372);
+function show_data_order()
+{
+    $pedido = wc_get_order(5371);
     $output = '';
 
     // Verificar si el pedido existe
@@ -304,7 +324,7 @@ function show_data_order() {
     $billing_state = $pedido->get_billing_state();
 
     // Construir el HTML para mostrar los datos
-    $output = '<p>Ciudad de facturación: ' . $billing_city . '</p>';
+    $output = '<p>Ciudad de facturación: ' . strtolower($billing_city) . '</p>';
     $output .= '<p>Estado de facturación: ' . $billing_state . '</p>';
 
     return $output;
