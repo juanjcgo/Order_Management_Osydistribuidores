@@ -9,6 +9,8 @@ function osy_get_token_sesion_upnify()
 {
     $url = 'https://api.salesup.com/integraciones/sesion';
     $tokenIntegracion = 'P2594465029-5A08-4640-815D-05A5B733A120';
+    $ruta_archivo = ORD_PATH . 'info/logs.txt';
+    $current_time = current_time('mysql');
 
     $request = curl_init();
     curl_setopt($request, CURLOPT_POST, 1);
@@ -21,6 +23,11 @@ function osy_get_token_sesion_upnify()
     curl_close($request);
 
     $array_result = json_decode($result);
+
+    if (!isset($array_result[0]->code) || empty($array_result[0]->code)) {
+        file_put_contents($ruta_archivo, $current_time . ' - ' . 'Error al generar el Token de sesión 1: ' . implode(", ", $array_result[0]->code) . "\n", FILE_APPEND);
+        file_put_contents($ruta_archivo, $current_time . ' - ' . 'Error al generar el Token de sesión 2: ' . implode(", ", $array_result[0]) . "\n", FILE_APPEND);
+    }
 
     return $array_result;
 }
@@ -35,10 +42,6 @@ function osy_create_opportunity($tkContacto, $order_id, $concepto)
     $res_token    = osy_get_token_sesion_upnify();
     $ruta_archivo = ORD_PATH . 'info/logs.txt';
     $current_time = current_time('mysql');
-
-    if (!isset($res_token[0]->code) || empty($res_token[0]->code)) {
-        file_put_contents($ruta_archivo, $current_time . ' - ' . 'Error al generar el Token de sesión: ' . $res_token . "\n", FILE_APPEND);
-    }
 
     $code          = $res_token[0]->code;
     $comision      = 0.15;
@@ -296,8 +299,10 @@ function send_new_order_data_to_crm($order_id)
             update_post_meta($order_id, 'tkContacto', $object_status->tkContacto);
         }
 
+        $concepto = mb_convert_encoding($info_product, 'UTF-8', 'ISO-8859-1');
+
         // Registrar nueva oportunidad  
-        $res = osy_create_opportunity($object_status->tkContacto, $order_id, $info_product);
+        $res = osy_create_opportunity($object_status->tkContacto, $order_id, $concepto);
 
         if ($res['res']) {
             $array_res = json_decode($res['data']);
@@ -311,24 +316,52 @@ function send_new_order_data_to_crm($order_id)
     }
 }
 
-add_shortcode('show_data_order', 'show_data_order');
-function show_data_order()
+/* add_shortcode('show_data_order', 'osy_get_token_sesion_upnify_test'); */
+/* function show_data_order()
 {
     $pedido = wc_get_order(5371);
     $output = '';
 
-    // Verificar si el pedido existe
+
     if (!$pedido) {
         return 'Pedido no encontrado.';
     }
 
-    // Obtener los datos de facturación del pedido
+
     $billing_city = $pedido->get_billing_city();
     $billing_state = $pedido->get_billing_state();
 
-    // Construir el HTML para mostrar los datos
+
     $output = '<p>Ciudad de facturación: ' . strtolower($billing_city) . '</p>';
     $output .= '<p>Estado de facturación: ' . $billing_state . '</p>';
 
     return $output;
-}
+} */
+
+
+/* function osy_get_token_sesion_upnify_test()
+{
+    $url = 'https://api.salesup.com/integraciones/sesion';
+    $tokenIntegracion = 'P2594465029-5A08-4640-815D-05A5B733A120';
+    $ruta_archivo = ORD_PATH . 'info/logs.txt';
+    $current_time = current_time('mysql');
+
+    $request = curl_init();
+    curl_setopt($request, CURLOPT_POST, 1);
+    curl_setopt($request, CURLOPT_URL, $url);
+    curl_setopt($request, CURLOPT_HTTPHEADER, array('token:' . $tokenIntegracion));
+    curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($request, CURLOPT_CONNECTTIMEOUT, 60);
+    curl_setopt($request, CURLOPT_TIMEOUT, 60);
+    $result = curl_exec($request);
+    curl_close($request);
+
+    $array_result = json_decode($result);
+
+    if (!isset($array_result[0]->code) || empty($array_result[0]->code)) {
+        var_dump($array_result);
+        var_dump($result);
+    } else {
+        var_dump($array_result);
+    }
+} */
