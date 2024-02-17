@@ -299,6 +299,7 @@ function send_new_order_data_to_crm($order_id)
             update_post_meta($order_id, 'tkContacto', $object_status->tkContacto);
         }
 
+        
         $concepto = mb_convert_encoding($info_product, 'UTF-8', 'ISO-8859-1');
 
         // Registrar nueva oportunidad  
